@@ -25,6 +25,8 @@ namespace sample_keycloak_mvc.Controllers
 
             //You get the user's first and last name below:
             ViewBag.Name = userClaims?.FindFirst("name")?.Value;
+            ViewBag.LoginName = userClaims?.FindFirst("preferred_username")?.Value;
+            ViewBag.Email = userClaims?.FindFirst(p => p.Type.Contains("emailaddress"))?.Value;
 
             var userPrinciple = User as ClaimsPrincipal;
 
@@ -36,15 +38,6 @@ namespace sample_keycloak_mvc.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
-        }
-
-        public ActionResult Logout()
-        {
-            HttpContext.GetOwinContext().Authentication.SignOut(
-                OpenIdConnectAuthenticationDefaults.AuthenticationType,
-                CookieAuthenticationDefaults.AuthenticationType);
-
-            return Redirect("/");
         }
     }
 }

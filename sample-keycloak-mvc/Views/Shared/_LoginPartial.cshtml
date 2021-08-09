@@ -1,0 +1,21 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @{
+                var userClaims = User.Identity as System.Security.Claims.ClaimsIdentity;
+                string nama = userClaims?.FindFirst("name")?.Value;
+            }
+            <a href="#">Hello @nama!</a>
+        </li>
+        <li>
+            @Html.ActionLink("Logout", "Logout", "Account")
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}
