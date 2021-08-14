@@ -94,7 +94,8 @@ namespace sample_keycloak_mvc.App_Start
                 },
                 // Disable Https for Development
                 RequireHttpsMetadata = false,
-                MetadataAddress = _metadataAddress
+                MetadataAddress = _metadataAddress,
+                ProtocolValidator = new CustomOpenIdConnectProtocolValidator(false)
             });
         }
 
@@ -105,5 +106,23 @@ namespace sample_keycloak_mvc.App_Start
             context.Response.Redirect("/?errormessage=" + context.Exception.Message);
             return Task.FromResult(0);
         }
+    }
+
+    public class CustomOpenIdConnectProtocolValidator : OpenIdConnectProtocolValidator
+    {
+        public CustomOpenIdConnectProtocolValidator(bool shouldValidateNonce)
+        {
+            this.ShouldValidateNonce = shouldValidateNonce;
+            this.RequireStateValidation = false;
+        }
+        protected override void ValidateNonce(OpenIdConnectProtocolValidationContext validationContext)
+        {
+            if (this.ShouldValidateNonce)
+            {
+                base.ValidateNonce(validationContext);
+            }
+        }
+
+        private bool ShouldValidateNonce { get; set; }
     }
 }
