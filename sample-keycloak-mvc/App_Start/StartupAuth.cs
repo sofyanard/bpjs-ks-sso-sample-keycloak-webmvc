@@ -8,6 +8,8 @@ using Microsoft.Owin.Security.Notifications;
 using Owin;
 using System;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Logging;
+using System.IO;
 
 [assembly: OwinStartup(typeof(sample_keycloak_mvc.App_Start.StartupAuth))]
 
@@ -15,6 +17,8 @@ namespace sample_keycloak_mvc.App_Start
 {
     public class StartupAuth
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         // The Client ID is used by the application to uniquely identify itself to Microsoft identity platform.
         string _clientId = System.Configuration.ConfigurationManager.AppSettings["clientId"];
 
@@ -37,6 +41,13 @@ namespace sample_keycloak_mvc.App_Start
 
             // https://developer.okta.com/blog/2018/08/29/secure-webforms-with-openidconnect-okta
             // https://docs.microsoft.com/en-us/azure/active-directory/develop/tutorial-v2-asp-webapp
+
+            
+            log4net.Config.XmlConfigurator.Configure(new FileInfo(System.Web.HttpContext.Current.Server.MapPath("~/log4net.config")));
+            log.Info("Hello logging world!");
+
+            // mungkin ini solusi error IDX20803: Unable to obtain configuration from :'[PII is hidden]'
+            // IdentityModelEventSource.ShowPII = true;
 
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
 

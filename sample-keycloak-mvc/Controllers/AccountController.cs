@@ -14,10 +14,14 @@ namespace sample_keycloak_mvc.Controllers
         // GET: Account
         public void Login()
         {
+            // redirect page after authenticated
+            string authenticatedUri = System.Configuration.ConfigurationManager.AppSettings["authenticatedUri"];
+
             if (!Request.IsAuthenticated)
             {
                 HttpContext.GetOwinContext().Authentication.Challenge(
-                new AuthenticationProperties { RedirectUri = "/" },
+                // new AuthenticationProperties { RedirectUri = "/" },
+                new AuthenticationProperties { RedirectUri = authenticatedUri },
                 OpenIdConnectAuthenticationDefaults.AuthenticationType);
             }
         }
